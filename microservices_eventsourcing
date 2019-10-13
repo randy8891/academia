@@ -1,0 +1,71 @@
+Event Sourcing 
+Even though event sourcing is becoming increasingly popular among micro services, it has been there for a while since its inception after being found by Martin Fowler. As per his definitions, Event Sourcing ensures that all the changes to an application state are stored as a sequence of events. What it simply means is that we do not store the state of an object, instead we store all the events that impact its state. When it comes to retrieving the object state we have to read the different events related to this object and they need to be applied one after the other.
+Command Query Responsibility Segregation (CQRS) goes in par with Event Sourcing and both of these moves well along with Domain Driven Development (DDD). Before CQRS existed, it was CQS which is an acronym for Command Query Separation. The whole idea behind this is very simple: each method in the object must belong to either command or query. Command method is responsible for changing the object’s state and query method is responsible for retrieving the data. What this imply means is that all the queries should return the same result as long as the object’s state has not been changed with a command method. 
+As stated earlier, CQRS is a style of application’s architecture which separates the read and write operations. As a result there will be only two models where one is for reading and the other one is for writing. 
+
+  |----------------|    |----------------|  
+  |                |==> | Command Model  | ==>
+  |                |    |                |
+  | User Interface |    |================|         DB
+  |                |    |                |
+  |                |<== | Query Model    | <==
+  |----------------|    |----------------|
+
+
+The above illustration shows that the implementation of the logic responsible for reading is independent of the implementation of the logic responsible for writing.
+
+Pros and Cons of Even Sourcing
+  Pros
+  •	There will not be any data loss.
+  •	Complete log of every state change ever will be available.
+  •	Better performance characteristics.
+  •	No more mapping objects to tables.
+  •	The entire system can be restored with the events occurred.
+  •	Full access to the history of changes in the domain objects is available.
+  •	Development can be divided among the team in a better way by separating read and write models.
+  •	Reading and writing parts can be scaled independently by allowing asymmetric scalability.
+  Cons
+  •	Changes are not available immediately soon after they take place.
+  •	The two models read and write will exist in the entire application life cycle.
+  •	Application will be more complex and adequate knowledge is required to manage and maintain.
+  •	Very few support from the existing frameworks of libraries.
+
+Uses of Event Sourcing
+Event sourcing is comprised of events which happens throughout the application. 
+Firstly, if we take an online pizza shopping store as real world example and if we think of the behavior when buying a pizza:
+  •	Select and add a pizza to the cart.
+  •	Add the favorite topping.
+  •	Add a tasty add-on.
+  •	Increase the add-ons up to 2.
+  •	Place the order with the content in the cart and choose the delivery option and payment method.
+  •	Make the payment and checkout.
+  
+In the above scenario the whole process is a series of subsequent events. If we are to do the same in a traditional approach, all the selections and the changes are applied to the cart object and then to the order object. Finally the state is written in to the database. In this traditional scenario we will never be able to track what was done in the middle of the order prior to the checkout.
+In Event Sourcing rather than the above mentioned traditional scenario, the subsequent events will be written to the database as and when they take place. The end result will be the same state as of the traditional approach.
+Secondly, we all have bank accounts. Suddenly when we check our account balance it is something which we never expected. As a result we get curious and will have the utmost necessity to know how that amount came in to my bank balance. If our account balance is a single column which have the latest state/value, it will be impossible for us to know how our balance became that amount. This is once instance where Event Sourcing comes in to action. In Event Sourcing we only store the subsequent events and not the current state. When we want to get the current state, all the events are used to retrieve it. This is approach is much more convenient and there won’t be any data loss.
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Event sourcing can be elaborated as a way of representing state by storing the history of the application’s state. In order to store the events we need an event store which can be described as an immutable append-only transaction log. As in financial accounting where we only can do appending and never a delete or update from the ledger. In the similar way, Event sourcing too keeps on storing the application’s state as subsequent events. 
+Thirdly, Air Traffic Management is another domain where Event Sourcing can be applied. One proven example is a system to compute and persist flight data to an Air Navigation Service Provider (ANSP).
+In this scenario when the air craft reaches the area of responsibility for the ANSP, the system receives data from various sources. Event sourcing comes in to play when the need arises to intelligently plan ahead to make decisions by looking at the previous states and current state. This has become a possibility in real world environment by being able to track down the events that has occurred in the area of responsibility. Also, there must be extremely high precision on all states and events as this type of applications fall in to safety critical environments which needs to be reliable, responsive and resilient that guarantees data consistency and integrity as these systems are responsible for human lives in every aspect.
+Fourthly, another domain where Event Sourcing fits well is inventory management. When we want to monitor how the inventory’s state is behaving, the subsequent events of state change will be helpful drastically. This will too be obliging to make decisions on what needs to be done in the long run to manage the inventory smoothly and intelligently.
+Lastly, Stock management is a great area where Event Sourcing fits well. We can capture the events of the stock object’s state transformation and bring about better predictions on its fluctuation in the competitive markets.   
+As described above Event Sourcing and CQRS can be a great solution to many domain areas. But before applying it to our problem areas we must clearly know its possibilities and limitations in order to bring about the best out of it.
