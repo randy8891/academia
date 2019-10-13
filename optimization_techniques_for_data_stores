@@ -1,0 +1,127 @@
+Optimization Techniques in Other Data Stores
+
+What is optimization?
+Almost all of the database management systems have query optimization functionality. For a given query there are many plans that the database management system can use to give the output. The result will be the same regardless of the plan but the cost it takes is what matters.
+Hence, query optimization is the process which identifies the best possible plan in terms of cost that a result can be produced for a given query.
+A query optimizer chooses an optimal index and access paths to execute the query. At a very high level, SQL optimizers decide the following before creating the execution tree:
+•	Query rewrite based on heuristics, cost or both.
+•	Index selection.
+•	Join reordering
+•	Join type
+Similar to relational database management systems, NoSQL and Cloud database management systems too have optimization techniques which brings out the expected results via the best possible query execution plan.
+
+NoSQL Query Optimization techniques.
+As per the MongoDB documentation, for a given query, the MongoDB query optimizer picks and caches the most efficient query plan given the available indexes. The evaluation of the most efficient query plan is based on the number of “work units” (works) performed by the query execution plan when the query planner assesses candidate plans.
+The associated plan cache entry is used for subsequent queries with the same query shape.
+db.collection.explain() or the cursor.explain() can be used to view the query plan information.
+As in relational/SQL databases, indexes help optimize NoSQL databases too. If the application queries a collection on a particular field or a set of fields, then an index on the queried filed or a composite index on the set of fields can prevent the query from scanning the entire collection to find and return query results.
+Suppose the Customer collection is to be queried on the type field for corporate customers:
+	db.customer.find({ type : corporate })
+
+Performance of the above query can be improved by adding an ascending or descending index to the customer collection on the type field.
+	db.customer.createIndex({ type : 1 })
+Above index will prevent the query by scanning the entire collection to produce the result. As per the MongoDB documentation, in addition to optimizing read operations, indexes can support sort operations and allow for a more efficient storage utilization. 
+MongoDB provides a great tool called database profiler to show performance characteristics of each operation against the database. Slow queries can be easily identified by using the database profiler and it will be possible to determine what indexes to be created to enhance query performance and reduce cost.
+Indexes support queries to reduce cost. Composite indexes are created if the query searches multiple fields. An index will be scanned much faster than a collection. The index structure stores indexes in order and are much smaller than collections.
+As per the MongoDB documentation:
+Index keys that are of the BinData type are more efficiently stored in the index if:
+•	Binary subtype value is in the range of 0-7 or 128-135
+•	Length of the byte array is: 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, or 32.
+
+Using limit() method will improve the performance if the required number of result rows are known beforehand. 
+db.posts.find().sort( { timestamp : -1 } ).limit(10)
+This is typically used in conjunction with sort operations.
+Another point to enhance query performance is to project only the necessary data. When a subset of fields is required from the document, better performance can be achieved by returning the required fields.
+db.posts.find( {}, { timestamp : 1 , title : 1 , author : 1 , abstract : 1} ).sort( { timestamp : -1 } )
+Even though the query optimizer selects the optimal index for particular operation, we can override the query optimizer by forcing what index to use in a query. This is possible by using the method hint().
+Reading from a collection will be faster by using indexes. But when it comes to write operations each index on a collection adds some amount of overhead to the performance.
+As the MongoDB document says, MongoDB only updates a sparse or partial index if the collections involved in a write operation are included in the index. The capability of the storage system creates some important physical limits for the performance of MongoDB’s write operations. Many unique factors related to the storage system of the drive affect write performance, including random access patterns, disk caches, disk readahead and RAID configurations.
+Solid state drives (SSDs) can outperform spinning hard disks (HDDs) by 100 times or more for random workloads.
+
+Cloud Database Optimization techniques
+When it comes to setting up physical databases there will be fixed costs of deploying and maintaining them to get the intended services. However, the cloud data stores have converted this to a Database as a service (DBaas) by enabling users to have a variable cost based on pay as you go manner. A cloud database is a distributed database that can provide services for distributed data.
+Among the many cloud database providers, Google gives a sophisticated cloud storage called Cloud Datastore. It is a highly scalable NoSQL database. It automatically handles sharding (partitioning of very large databases in to smaller, faster easily manageable parts) and replication by making it possible to scale automatically in order to handle the application load.
+Even though NoSQL is stressing on CAP theorem (Consistance, Availability, Partition Toloerance), Cloud Datastore is capable of providing ACID properties which are specific for relational databases. (Atomicity, Consistency, Isolation, Durability). Also, it gives SQL like queries and provides indexes for optimization.
+ As per the documentation, every Cloud Firestore in Datastore mode query computes its results using one or more indexes which contain entity keys in a sequence specified by the index's properties and, optionally, the entity's ancestors. The indexes are updated to reflect any changes the application makes to its entities, so that the correct results of all queries are available with no further computation needed.
+
+There are two types of indexes:
+•	Built-in indexes
+By default, a Datastore mode database automatically predefines an index for each property of each entity kind. These single property indexes are suitable for simple types of queries.
+
+
+•	Composite indexes
+Composite indexes index multiple property values per indexed entity. Composite indexes support complex queries.
+
+Index definition and structure
+An index is defined on a list of properties of a given entity kind, with a corresponding order (ascending or descending) for each property. For use with ancestor queries, the index may also optionally include an entity's ancestors. (An ancestor query limits its results to the specified entity and its descendants.)
+An index table contains a column for every property named in the index's definition. Each row of the table represents an entity that is a potential result for queries based on the index. An entity is included in the index only if it has an indexed value set for every property used in the index; if the index definition refers to a property for which the entity has no value, that entity will not appear in the index and hence will never be returned as a result for any query based on the index.
+The rows of an index table are sorted first by ancestor and then by property values, in the order specified in the index definition. The perfect index for a query, which allows the query to be executed most efficiently, is defined on the following properties, in order:
+•	Properties used in equality filters
+•	Property used in an inequality filter (of which there can be no more than one)
+•	Properties used in sort orders
+
+This ensures that all results for every possible execution of the query appear in consecutive rows of the table. Datastore mode databases execute a query using a perfect index by the following steps:
+
+•	Identifies the index corresponding to the query's kind, filter properties, filter operators, and sort orders
+•	Scans from the beginning of the index to the first entity that meets all of the query's filter conditions
+•	Continues scanning the index, returning each entity in turn, until it
+  o	encounters an entity that does not meet the filter conditions, or
+  o	reaches the end of the index, or
+  o	has collected the maximum number of results requested by the query
+
+
+
+For example, consider the following query:
+SELECT * FROM Task
+WHERE category = 'Personal'
+  AND priority < 3
+ORDER BY priority DESC
+
+The perfect index for this query is a table of keys for entities of kind Task, with columns for the values of the category and priority properties. The index is sorted first in ascending order by category and then in descending order by priority:
+
+indexes:
+- kind: Task
+  properties:
+  - name: category
+    direction: asc
+  - name: priority
+    direction: desc
+
+When we consider below two queries:
+SELECT * FROM Task WHERE category = 'Personal'  
+AND priority = 5
+ORDER BY created ASC
+
+SELECT * FROM Task
+WHERE category = 'Work'
+ORDER BY priority ASC, created ASC
+
+Below index will satisfy both the above queries:
+indexes:
+- kind: Task
+  properties:
+  - name: category
+    direction: asc
+  - name: priority
+    direction: asc
+  - name: created
+    direction: asc
+
+Furthermore, Cloud Datastore provides built-in or automatic indexes for queries.
+
+In general, and apart from the product specific optimization methods there are some other techniques which are used for query optimization. MapReduce is one of them. 
+
+MapReduce is a new data processing technique which was proposed by Google. It is used to handle large scale data analysis jobs. It operates on the top of Distributed File systems (DFS). Data in DFS is partitioned into equal size chunks which facilitates parallel data processing. 
+
+MapReduce  platforms  that  are  used  in  cloud  databases  suffer  from processing cost  for join-intensive  queries.
+
+However, cloud data store query optimization is still in research level. 
+
+Numerous approaches are discovered by the researchers which are seasoned with one or more following query optimization techniques. 
+•	Elimination of Redundant Evaluation 
+•	Continuous or Iterative processing 
+•	Catching Intermediate Queries or Results 
+•	Materialization 
+•	Pipelining
+
+This is a vast area which can span up to a plethora of knowledge which is still in research level.
