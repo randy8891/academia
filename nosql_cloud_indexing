@@ -1,0 +1,84 @@
+What is an Index?
+Indexes play a major role when it comes to the performance of the database.  This is by supporting the efficient execution of queries. An index is a data structure that advances the retrieving of data on a database table. By using an index the search data can be quickly located without having to search each and every row in the database table. This is similar for both SQL and NoSQL databases. Relational databases have many ways to index data for better performance. 
+Namely:-
+  •	Primary Index
+  •	Secondary Index
+  •	Clustering Index
+  •	Multilevel Index
+  •	Dynamic Multilevel Indexes
+  •	Bitmap Index
+  •	Function based Index
+  •	Invisible Index
+However when considering NoSQL databases the indexing mechanisms are not the same as in relational approach. NoSQL databases have so many types. More descriptive way to classify these types would be Column, Document, Key-Value and Graph.
+Some examples (out of many) for the above types are:
+  •	Column: Cassendra
+  •	Document: Apache CouchDB, MongoDB, RethinkDB
+  •	Key-value: DynamoDB, Oracle NoSQL Database
+  •	Graph: Apache Giraph, InfiniteGraph 
+
+Product wise indexing mechanisms at a glance.
+Cassandra is a column oriented NoSQL database that supports secondary indexes on tables. CREATE INDEX statement is used to create an index on a table:
+  •	CREATE INDEX userIndex ON NerdMovies (user);
+  •	CREATE INDEX ON Mutants (abilityId);
+  •	CREATE INDEX ON users (keys(favs));
+  •	CREATE CUSTOM INDEX ON users (email) USING 'path.to.the.IndexClass';
+  •	CREATE CUSTOM INDEX ON users (email) USING 'path.to.the.IndexClass' WITH OPTIONS = {'storage': '/mnt/ssd/indexes/'};
+
+Most importantly if there is data available on the column, there will be an asynchronous indexing. Thus, after the index has been created, new data for the column is indexed automatically at insertion time.
+There will be an error if tried to create an already existing index. But this can be resolved by using IF NOT EXISTS option. 
+Cassandra supports maps. A map is a (sorted) set of key-value pairs, where keys are unique and the map is sorted by its keys. When creating an index on a map, an index will be created on either the keys or the values. If the column identifier is placed within the keys() function, the index will be on the map keys, allowing the CONTAINS KEY to be used in WHERE clauses. Otherwise, the index will be on the map values.
+When dropping an index the DROP INDEX statement is used as below: 
+DROP INDEX [ IF EXISTS ] index_name
+MongoDB is a document oriented NoSQL database that supports indexing. It is scalable, document oriented and open source and also schema free. It achieves the performance of traditional key-value store while maintaining the functionality of traditional relational database management systems.
+Index in MongoDB supports efficient execution of queries. Instead of tables/relations in RDBMS, MongoDB has collections to store data. When indexes are used MongoDB will be able to limit the number of document scans to match the search query statement. If not it will have to go through and perform a collection scan to match the query statement. MongoDB can return the results in a sorted manner by using the ordering in the index.
+Like the indexes in other database systems, MongoDB defines indexes at collection level. Also, it supports indexes on any field, sub field of the documents in a collection. A dodument in MongoDB is equivalent to a row of a table in relational database systems. When creating a collection, MongoDB creates a unique index on the _id field by preventing the duplication of values in that column.
+The db.collection.createIndex() method only creates an index if an index of the same specification does not already exist. 
+db.customers.createIndex( { last_name: -1 } ) => this will create an index on customers collection in descending order. Direction of the sorting order is represented by 1 or -1 for ascending and descending respectively.
+Once created, the index cannot be renamed. Instead it must be dropped and re-created with the renaming or any other change.
+db.collection.getIndexes() can be used to view index names.
+MongoDB has a number of index types:
+  •	Single field Index
+  •	Compound Index
+  •	Multikey Index
+  •	Geospatial index
+  •	Text Index
+  •	Hashed Index
+This will support specific types of data and queries. Also, it is to be considered that MongoDB uses         B-tree data structure for indexing.
+Single field Index=> MongoDB supports the creation of user-defined ascending/descending indexes on a single field of a document in addition to the _id index which is defined by MongoDB. Since this index can be traversed in either direction (ascending/descending), the sort order of the index does not matter.
+Compound Index => These are user defined indexes on multiple fields. The order of fields in compound index is important as the index values will be created based on the direction which we specify.
+For example: 
+db.customers.createIndex({ last_name:1, age:-1 }) index will be created as below:
+
+Row	 | last_name	|  age
+-----|------------|--------
+1	   | Aponso	    |   31
+2	   | Aponso	    |   30
+3	   | Bernard	  |   35
+4	   | Costa	    |   45
+5	   | Costa	    |   40
+6	   | Costa	    |   25
+7	   | Desilva	  |   29
+
+In the above example the last_name will be sorted in ascending order while the age will be in descending order with respect to the last_name column.
+The sort order of the compound index keys can decide if the index can support a sort operation.
+Multikey Index => Used to index the data stored in arrays. As per the MongoDB documentation, if a field is indexed that holds an array value, MongoDB creates separate index entries for every element of the array. These multikey indexes allow queries to select documents that contain arrays by matching on element or elements of the arrays. MongoDB automatically determines whether to create a multikey index if the indexed field contains an array value and the multikey type is not required to be specified explicitly. 
+Geospatial Index => This is mainly created to support geospatial coordinate data. The documentation says that MongoDB provides two special indexes: 2d indexes that uses planar geometry when returning results and 2dsphere indexes that use spherical geometry to return results.
+Text Indexes => This has been created to support the string searching in a collection.
+Hashed Indexes => Sharding is when a database architecture that partitions data by key ranges and distributes the data among two or more database instances and sharding enables horizontal scaling. As per the documentation in order to support hash based sharding, MongoDB provides a hashed index type, which indexes the hash of the value of a field. These indexes have a more random distribution of values along their range, but only support equality matches and cannot support range-based queries.
+
+Indexes of MongoDB has many properties.
+Unique Index => duplicated values will be rejected in the index field.
+Partial Index => The documents in a collection that meets a specified filter expression will only be partial indexed.  The advantage of this is the lower storage requirements and reduced performance costs. This can be considered as a superset of the sparse index functionality.
+Sparse Index => Sparse means that there is a record/document only for some of the search key values. This property ensures that the index only contain entries for documents that have the indexed field. The index skips documents that do not have the indexed field.
+TTL Index => This simply means “time to live”. As per the documentation, TTL indexes are special indexes that MongoDB can use to automatically remove documents from a collection after a certain amount of time. This is ideal for certain types of information like machine generated event data, logs, and session information that only need to persist in a database for a finite amount of time.
+
+DynamoDB is a fully managed NoSQL cloud database produced by Amazon. It provides fast and predictable performance with seamless scalability. Secondary indexes can be created in DynamoDB while specifying a partition key and a sort key. Once the index is created it can be queried in the similar way of a collection/table scan. The secondary index here in DynamoDB is used only when it is queried or scanned as there is no query optimizer.
+According to the documentation DynamoDB supports two different kinds of indexes:
+•	Global secondary indexes – The primary key of the index can be any two attributes from its table.
+•	Local secondary indexes – The partition key of the index must be the same as the partition key of its table. However, the sort key can be any other attribute.
+DynamoDB ensures that the data in a secondary index is eventually consistent with its table. 
+Strongly consistent Query or Scan actions can be requested on a table or a local secondary index. However, global secondary indexes support only eventual consistency.
+When it comes to indexing in NoSQL databases there are many data structures used. Out of those there are more common ones which are being used widely:
+•	B-Tree / B+ Tree Indexing
+•	T - Tree Indexing
+•	O2 Tree Indexing
