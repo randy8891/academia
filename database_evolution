@@ -1,0 +1,91 @@
+Evolution of Databases
+
+Databases are everywhere. Knowingly or unknowingly we happen to interact with databases on daily basis. For instance, the ATM transactions, checking bank balance, online shopping, credit card transactions, social media activities and so on are all examples of database interrelations. 
+Databases have evolved ever since and still is in the process of evolution. In early days when there were no databases, everything was recorded on paper where the organizations had to manage and maintain huge stacks of files, papers and all sorts of physical documents. This was a troublesome task as there were so many issues involved in it. There were many instances where most of the data got destroyed due to fires, floods and security problems as the data was physically accessible easily. In order to eradicate the above-mentioned issues, the database was created, and it was meant to eliminate the paper-based information storages. Since the data in the database is stored in bits and bytes most of the glitches were sorted up to a greater extent.  
+When it comes to databases, the files are called records and the discrete data elements are called elements. Most importantly the way these data elements are stored in the database has evolved since then and still the evolution is going on.
+Below are database models developed since the history of computing.
+•	Hierarchical Model
+•	Network Model
+•	Relational Model
+•	Entity Relationship Model
+•	Object Model
+•	Document Model
+•	Entity attribute value model
+•	Star Schema
+Hierarchical Model
+This model has the data organized into a tree-like structure and was developed by IBM in 1960s. The data is stored as records and a record is a collection of fields. Each filed contains only one value. The records are connected to each other via links.
+
+Root (Parent)
+  Level 1 child
+      Level 2 child
+      Level 2 child
+  Level 1 child
+      Level 2 child
+      Level 2 child
+  Level 1 child
+      Level 2 child
+      Level 2 child
+
+
+In the above diagram, each record has a parent record and it all starts with a root record.
+To access the data using this model, the whole tree had to be traversed. This being a problem, another primary issue of this data model is that it cannot easily represent relationships between the types of data. In order to achieve this, many advanced and complex methods had to be followed. But still some of these databases are in existence due to their few advantages over the current advanced data models and that is mainly due to its speed and simplicity. However, this was a great outcome to eliminate many issues which were there in paper-based systems.
+
+Network Model
+Network model was introduced to overcome the restrictions of the Hierarchical model and it allows relationships and it has a diagrammatic representation of the relationships which is called as the schema. This model allows each record to have more than one parent and child record and that can be considered as the main variance from the Hierarchical model. However, IBM kept using the Hierarchical model along with their more established products and hence then a newer model called the Relational Model was introduced. 
+
+Relational Model
+This was first described in 1969 by an English computer scientist called E F Codd. Relational model was far easier than the other two mentioned above in terms of design and its programming interface. In 1960s and 1970s as the hardware was so scares, and the mainframe computers were focused on the fastest possible solutions. Afterwards the computing technology made vast improvements and as a result the above-mentioned relational model became popular. 
+This model is talks about tables where the data is stored, and each table has records with fields. 
+There are relationships between tables (relations) and below are the common relationship types available:
+•	One-to-one
+•	One-to-many
+•	Many-to-many
+Relationships among the relations help to maintain the integrity of the database. Relational databases use SQL (Structured Query Language) to access data. The main advantage of relational model is that it provides data consistency. Also, the relational model helps to map the real world when designing the database where it meets the business logic to a greater extent.
+Some of the famous relational database are:
+•	Oracle
+•	DB2
+•	Microsoft SQL Server
+
+Entity Relationship Model
+This model can be considered as a result of a methodical analysis describing the important processes of a business. A graphical representation is used to express the associations and dependencies of the entities. Entities are characterized by relationships and additional properties are known as attributes. An ER model is typically implemented as a database. A relation means a table and each row of a table represents one instance of an entity type and each field in a table represents an attribute type.	
+
+Object Model
+As used in object oriented programming, the information in object model databases are represented as objects. This is different from the object relational databases as they use tables and are table oriented. 
+Few products among the object databases are:
+•	Realm
+•	Gemstone
+•	Wakanda
+Document Model
+As per Wikipedia a document-oriented database, or document store, is a computer program designed for storing, retrieving and managing document-oriented information, also known as semi-structured data. This falls to one of the main categories of NoSQL databases. In simple terms a document model is basically a key value store. Eg:
+JSON						                XML
+{						                  <person>
+  “firstname” : “Nimal”,				  <firstname>Nimal</firstname>
+  “lastname” : “Silva”,				    <lastname>Silva</lastname>
+  “age”:”52”					            <age>52</age>
+}						                  </person>
+
+Some popular document databases:
+MogoDB, Amazon DocumentDB, Apache CouchDB, Orient Logic
+Entity-attribute-value Model
+As per Wikipedia, the Entity–attribute–value model (EAV) is a data model to encode, in a space-efficient manner, entities where the number of attributes (properties, parameters) that can be used to describe them is potentially vast, but the number that will actually apply to a given entity is relatively modest. Such entities correspond to the mathematical notion of a sparse matrix.
+EAV is also known as object–attribute–value model, vertical database model, and open schema.
+
+Star Schema
+This is mostly used for data warehousing and it is the simplest style of data mart schema. The star schema consists of one or more tables referencing any number of dimension tables. As per Wikipedia, the star schema separates business process data into facts, which hold the measurable, quantitative data about a business, and dimensions which are descriptive attributes related to fact data. Examples of fact data include sales price, sale quantity, and time, distance, speed and weight measurements. Related dimension attribute examples include product models, product colors, product sizes, geographic locations, and salesperson names.
+
+Three level Database architecture
+
+As described in ANSI-SPARK architecture there three levels.
+Namely:
+•	External Level
+•	Conceptual Level
+•	Internal Level
+External level is the section where the data can be reached by the users. This is also known as the view level or top level. Users can view the desired data from this level with the help of conceptual and internal level mapping.
+Conceptual level is the logical level where the whole design of the database takes place including the schema design and the relationship among the data. Database and constraints are implemented at this level and the maintenance is done by the DBA (Database Administrator).
+Internal level or the physical level is where the data is actually stored in the storage devices. Space allocation for the data is done at this level and this is the lowest level of the ANSI-SPARK architecture.
+
+References:
+https://en.wikipedia.org/wiki/Data_modeling
+http://jcsites.juniata.edu/faculty/rhodes/dbms/dbarch.htm
+https://opentextbc.ca/dbdesign01/chapter/chapter-5-data-modelling/
+https://slideplayer.com/slide/4993403/
